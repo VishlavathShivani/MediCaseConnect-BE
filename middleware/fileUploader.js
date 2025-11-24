@@ -29,12 +29,6 @@ const fileFilterDeptLogo = (req, file, cb) => {
 const autoFileNameGeneratorReport = (req, file, cb) => {
   // You can get these from req.body, query params, or decoded token
   const { branchCode, deptCode, clinicianId } = req.body;
-  
-  console.log('=== BACKEND RECEIVED REQUEST ===');
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
-  console.log('File:', file);
-  console.log('===========================');
 
 
   if (!branchCode || !deptCode || !clinicianId) {

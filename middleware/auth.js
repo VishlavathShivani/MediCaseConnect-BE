@@ -21,7 +21,6 @@ import { clerkClient } from "@clerk/clerk-sdk-node";
 export const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    console.log("Auth Header:", authHeader);
 
     if (!authHeader?.startsWith("Bearer ")) {
       return res.status(401).json({
@@ -37,7 +36,6 @@ export const authenticateUser = async (req, res, next) => {
       secretKey: process.env.CLERK_SECRET_KEY, // must be your secret key (starts with sk_)
     });
 
-    console.log("Token payload:", payload);
 
     const userId = payload.sub; // Clerk puts user ID in the `sub` field
     if (!userId) {

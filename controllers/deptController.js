@@ -61,22 +61,48 @@ export const addDepartment = async (req, res) => {
 
 export const updateDepartmentByCode = async (req, res) => {
   try {
+    const { code } = req.params;
+    const { name, description } = req.body;
+    const logoUrl = req.file?.location || null;
 
-    const { code } = req.params
-    const { name, description } = req.body
-    const logoUrl = req.file.location;
+    let dept;
 
-    const dept = await sql`UPDATE departments SET name = ${name}, description = ${description}, logo_url = ${logoUrl} WHERE code = ${code} RETURNING code`;
+    // Update with or without logo
+    if (logoUrl) {
+      dept = await sql`
+        UPDATE departments 
+        SET name = ${name}, description = ${description}, logo_url = ${logoUrl}
+        WHERE code = ${code}
+        RETURNING *
+      `;
+    } else {
+      dept = await sql`
+        UPDATE departments 
+        SET name = ${name}, description = ${description}
+        WHERE code = ${code}
+        RETURNING *
+      `;
+    }
+
+    if (dept.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Department not found' 
+      });
+    }
 
     res.json({
       success: true,
       message: "Department updated successfully",
-      department: dept[0].code
-    })
+      department: dept[0]
+    });
+    
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message })
+    console.error("Update error:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
-}
+};
+
 
 export const deleteDepartmentByCode = async (req, res) => {
   try {
